@@ -2,6 +2,8 @@
  * Copyright (c) 2018 European Organisation for Nuclear Research (CERN), All Rights Reserved.
  */
 
+/**Modified by GiuSan82*/
+
 package cern.extjfx.chart.plugins;
 
 import javafx.collections.ObservableList;
@@ -37,8 +39,13 @@ public class CrosshairIndicator<X, Y> extends AbstractDataFormattingPlugin<X, Y>
      */
     public static final String STYLE_CLASS_LABEL = "chart-crosshair-label";
 
-    private static final int LABEL_X_OFFSET = 15;
-    private static final int LABEL_Y_OFFSET = 5;
+    private int mLabelXoffset = 15;
+    private int mLabelYoffset = 5;
+    private int mCursorXoffset;
+    private int mCursorYoffset;
+    private String mLabelX = "";
+    private String mLabelY = "";
+    private String mSeparator = "\n";
 
     private final Path crosshairPath = new Path();
     private final Label coordinatesLabel = new Label();
@@ -55,6 +62,15 @@ public class CrosshairIndicator<X, Y> extends AbstractDataFormattingPlugin<X, Y>
         registerMouseEventHandler(MouseEvent.MOUSE_MOVED, mouseMoveHandler);
     }
 
+    //setters added by GiuSan82
+    public void setCursorXoffset(int cursor_x_offset){this.mCursorXoffset = cursor_x_offset;}
+    public void setCursorYoffset(int cursor_y_offset){this.mCursorYoffset = cursor_y_offset;}
+    public void setLabelXoffset(int label_x_offset){this.mLabelXoffset = label_x_offset;}
+    public void setLabelYoffset(int label_y_offset){this.mLabelYoffset = label_y_offset;}
+    public void setLabelX(String label_x){this.mLabelX = label_x;}
+    public void setLabelY(String label_y){this.mLabelY = label_y;}
+    public void setSeparator(String separator){this.mSeparator = separator;}
+
     private final EventHandler<MouseEvent> mouseMoveHandler = (MouseEvent event) -> {
         Bounds plotAreaBounds = getChartPane().getPlotAreaBounds();
         if (!plotAreaBounds.contains(event.getX(), event.getY())) {
@@ -70,13 +86,14 @@ public class CrosshairIndicator<X, Y> extends AbstractDataFormattingPlugin<X, Y>
         }
     };
 
+    //edited by GiuSan82
     private void updatePath(MouseEvent event, Bounds plotAreaBounds) {
         ObservableList<PathElement> path = crosshairPath.getElements();
         path.clear();
-        path.add(new MoveTo(plotAreaBounds.getMinX() + 1, event.getY()));
-        path.add(new LineTo(plotAreaBounds.getMaxX(), event.getY()));
-        path.add(new MoveTo(event.getX(), plotAreaBounds.getMinY() + 1));
-        path.add(new LineTo(event.getX(), plotAreaBounds.getMaxY()));
+        path.add(new MoveTo(plotAreaBounds.getMinX() + 1, event.getY() + mCursorYoffset));
+        path.add(new LineTo(plotAreaBounds.getMaxX(), event.getY() + mCursorYoffset));
+        path.add(new MoveTo(event.getX() + mCursorXoffset, plotAreaBounds.getMinY() + 1));
+        path.add(new LineTo(event.getX() + mCursorXoffset, plotAreaBounds.getMaxY()));
     }
 
     private void updateLabel(MouseEvent event, Bounds plotAreaBounds) {
@@ -85,21 +102,22 @@ public class CrosshairIndicator<X, Y> extends AbstractDataFormattingPlugin<X, Y>
         double width = coordinatesLabel.prefWidth(-1);
         double height = coordinatesLabel.prefHeight(width);
 
-        double xLocation = event.getX() + LABEL_X_OFFSET;
-        double yLocation = event.getY() + LABEL_Y_OFFSET;
+        double xLocation = event.getX() + mLabelXoffset;
+        double yLocation = event.getY() + mLabelYoffset;
 
         if (xLocation + width > plotAreaBounds.getMaxX()) {
-            xLocation = event.getX() - LABEL_X_OFFSET - width;
+            xLocation = event.getX() - mLabelXoffset - width;
         }
         if (yLocation + height > plotAreaBounds.getMaxY()) {
-            yLocation = event.getY() - LABEL_Y_OFFSET - height;
+            yLocation = event.getY() - mLabelYoffset - height;
         }
         coordinatesLabel.resizeRelocate(xLocation, yLocation, width, height);
     }
 
+    //edited by GiuSan82
     private String formatLabelText(Point2D displayPointInPlotArea) {
         // Support for multiple axes missing
         Axis<Y> yAxis = getChartPane().getChart().getYAxis();
-        return formatData(yAxis, toDataPoint(yAxis, displayPointInPlotArea));
+        return formatData(mLabelY, mLabelX, mSeparator, yAxis, toDataPoint(yAxis, displayPointInPlotArea));
     }
 }

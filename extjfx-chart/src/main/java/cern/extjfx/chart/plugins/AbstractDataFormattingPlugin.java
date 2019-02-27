@@ -1,6 +1,7 @@
 /**
  * Copyright (c) 2018 European Organisation for Nuclear Research (CERN), All Rights Reserved.
  */
+/**Modified by GiuSan82*/
 
 package cern.extjfx.chart.plugins;
 
@@ -128,7 +129,11 @@ public abstract class AbstractDataFormattingPlugin<X, Y> extends XYChartPlugin<X
         return getXValueFormatter(getChartPane().getChart().getXAxis()).toString(data.getXValue()) + ", "
                 + getYValueFormatter(yAxis).toString(data.getYValue());
     }
-
+    //added by GiuSan82
+    protected String formatData(String label_Y, String label_X, String separator, Axis<Y> yAxis, Data<X, Y> data) {
+        return label_X + getXValueFormatter(getChartPane().getChart().getXAxis()).toString(data.getXValue()) + separator
+                + label_Y + getYValueFormatter(yAxis).toString(data.getYValue());
+    }
     private StringConverter<X> getXValueFormatter(Axis<X> xAxis) {
         return getValueFormatter(xAxis, getXValueFormatter(), defaultXValueFormatter);
     }
