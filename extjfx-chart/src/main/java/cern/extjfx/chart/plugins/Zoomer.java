@@ -1,6 +1,7 @@
 /**
  * Copyright (c) 2018 European Organisation for Nuclear Research (CERN), All Rights Reserved.
  */
+/**Modified by GiuSan82*/
 
 package cern.extjfx.chart.plugins;
 
@@ -16,10 +17,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import cern.extjfx.chart.Axes;
-import cern.extjfx.chart.AxisMode;
-import cern.extjfx.chart.NumericAxis;
-import cern.extjfx.chart.XYChartPlugin;
+import cern.extjfx.chart.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -65,6 +63,8 @@ public class Zoomer extends XYChartPlugin<Number, Number> {
     public static final String STYLE_CLASS_ZOOM_RECT = "chart-zoom-rect";
     private static final int ZOOM_RECT_MIN_SIZE = 5;
     private static final Duration DEFAULT_ZOOM_DURATION = Duration.millis(500);
+
+    private BooleanProperty mZoomedProperty = new SimpleBooleanProperty();
 
     /**
      * Default zoom-in mouse filter passing on left mouse button (only).
@@ -443,10 +443,12 @@ public class Zoomer extends XYChartPlugin<Number, Number> {
         uninstallCursor();
     }
 
+    //edited by GiuSan82
     private void performZoomIn() {
         clearZoomStackIfAxisAutoRangingIsEnabled();
         pushCurrentZoomWindows();
         performZoom(getZoomDataWindows());
+        mZoomedProperty.set(true);
     }
 
     private void pushCurrentZoomWindows() {
@@ -553,17 +555,20 @@ public class Zoomer extends XYChartPlugin<Number, Number> {
      * 
      * @return true if there was a zoom active and we could zoom out, false otherwise.
      */
+    //Edited by GiuSan82
     public boolean zoomOut() {
         clearZoomStackIfAxisAutoRangingIsEnabled();
         Map<XYChart<Number, Number>, Rectangle2D> zoomWindows = getZoomWindows(Deque::pollFirst);
 
         if (zoomWindows.isEmpty()) {
+            mZoomedProperty.set(false);
             return false;
         }
         performZoom(zoomWindows);
+        mZoomedProperty.set(true);
         return true;
     }
-
+    //edited by GiuSan82
     private boolean zoomOrigin() {
         clearZoomStackIfAxisAutoRangingIsEnabled();
         Map<XYChart<Number, Number>, Rectangle2D> zoomWindows = getZoomWindows(Deque::peekLast);
@@ -572,6 +577,7 @@ public class Zoomer extends XYChartPlugin<Number, Number> {
         }
         clear();
         performZoom(zoomWindows);
+        mZoomedProperty.set(false);
         return true;
     }
 
@@ -611,4 +617,6 @@ public class Zoomer extends XYChartPlugin<Number, Number> {
     public void clear() {
         zoomStacks.clear();
     }
+
+    public BooleanProperty getZoomedProperty(){return this.mZoomedProperty;}
 }
