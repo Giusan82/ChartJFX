@@ -21,10 +21,7 @@ import cern.extjfx.chart.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.*;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -64,7 +61,7 @@ public class Zoomer extends XYChartPlugin<Number, Number> {
     private static final int ZOOM_RECT_MIN_SIZE = 5;
     private static final Duration DEFAULT_ZOOM_DURATION = Duration.millis(500);
 
-    private BooleanProperty mZoomedProperty = new SimpleBooleanProperty();
+    private IntegerProperty mZoomedProperty = new SimpleIntegerProperty();
 
     /**
      * Default zoom-in mouse filter passing on left mouse button (only).
@@ -448,7 +445,9 @@ public class Zoomer extends XYChartPlugin<Number, Number> {
         clearZoomStackIfAxisAutoRangingIsEnabled();
         pushCurrentZoomWindows();
         performZoom(getZoomDataWindows());
-        mZoomedProperty.set(true);
+        for (XYChart<Number, Number> chart : getCharts()) {
+            mZoomedProperty.set(zoomStacks.get(chart).size());
+        }
     }
 
     private void pushCurrentZoomWindows() {
@@ -555,17 +554,14 @@ public class Zoomer extends XYChartPlugin<Number, Number> {
      * 
      * @return true if there was a zoom active and we could zoom out, false otherwise.
      */
-    //Edited by GiuSan82
     public boolean zoomOut() {
         clearZoomStackIfAxisAutoRangingIsEnabled();
         Map<XYChart<Number, Number>, Rectangle2D> zoomWindows = getZoomWindows(Deque::pollFirst);
 
         if (zoomWindows.isEmpty()) {
-            mZoomedProperty.set(false);
             return false;
         }
         performZoom(zoomWindows);
-        mZoomedProperty.set(true);
         return true;
     }
     //edited by GiuSan82
@@ -577,7 +573,7 @@ public class Zoomer extends XYChartPlugin<Number, Number> {
         }
         clear();
         performZoom(zoomWindows);
-        mZoomedProperty.set(false);
+        mZoomedProperty.set(0);
         return true;
     }
 
@@ -597,7 +593,7 @@ public class Zoomer extends XYChartPlugin<Number, Number> {
             }
         }
     }
-
+    //edited by GiuSan82
     private Map<XYChart<Number, Number>, Rectangle2D> getZoomWindows(
             Function<Deque<Rectangle2D>, Rectangle2D> extractor) {
         Map<XYChart<Number, Number>, Rectangle2D> zoomWindows = new HashMap<>();
@@ -607,6 +603,7 @@ public class Zoomer extends XYChartPlugin<Number, Number> {
                 return Collections.emptyMap();
             }
             zoomWindows.put(chart, extractor.apply(deque));
+            mZoomedProperty.set(deque.size());
         }
         return zoomWindows;
     }
@@ -618,5 +615,6 @@ public class Zoomer extends XYChartPlugin<Number, Number> {
         zoomStacks.clear();
     }
 
-    public BooleanProperty getZoomedProperty(){return this.mZoomedProperty;}
+    //added by GiuSan82
+    public IntegerProperty getZoomedProperty(){return this.mZoomedProperty;}
 }

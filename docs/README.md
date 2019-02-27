@@ -3,7 +3,7 @@
 
 # ExtJFX
 
-ExtJFX is a small library developed at CERN containing features needed by our JavaFX applications that are not supported by the standard JavaFX toolkit. 
+This is a modified version of ExtJFX that I edited to better fit for my needs. It was been developed at CERN, containing features not supported by the standard JavaFX toolkit. 
 The library consists of 3 modules: 
 - [extjfx-chart](#extjfx-chart): zooming, panning, data annotations, value/range indicators, chart decorations, overlaying different types of charts, etc.
 - [extjfx-fxml](#extjfx-fxml): `FxmlView` class that simplifies loading FXML files using conventional names
