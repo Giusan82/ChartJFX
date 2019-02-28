@@ -554,6 +554,7 @@ public class Zoomer extends XYChartPlugin<Number, Number> {
      * 
      * @return true if there was a zoom active and we could zoom out, false otherwise.
      */
+    //edited by GiuSan82
     public boolean zoomOut() {
         clearZoomStackIfAxisAutoRangingIsEnabled();
         Map<XYChart<Number, Number>, Rectangle2D> zoomWindows = getZoomWindows(Deque::pollFirst);
@@ -562,6 +563,9 @@ public class Zoomer extends XYChartPlugin<Number, Number> {
             return false;
         }
         performZoom(zoomWindows);
+        for (XYChart<Number, Number> chart : getCharts()) {
+            mZoomedProperty.set(zoomStacks.get(chart).size());
+        }
         return true;
     }
     //edited by GiuSan82
@@ -593,7 +597,6 @@ public class Zoomer extends XYChartPlugin<Number, Number> {
             }
         }
     }
-    //edited by GiuSan82
     private Map<XYChart<Number, Number>, Rectangle2D> getZoomWindows(
             Function<Deque<Rectangle2D>, Rectangle2D> extractor) {
         Map<XYChart<Number, Number>, Rectangle2D> zoomWindows = new HashMap<>();
@@ -603,7 +606,6 @@ public class Zoomer extends XYChartPlugin<Number, Number> {
                 return Collections.emptyMap();
             }
             zoomWindows.put(chart, extractor.apply(deque));
-            mZoomedProperty.set(deque.size());
         }
         return zoomWindows;
     }
