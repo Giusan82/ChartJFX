@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2017 European Organisation for Nuclear Research (CERN), All Rights Reserved.
  */
-
+/**Modified by GiuSan82*/
 package cern.extjfx.chart.plugins;
 
 import javafx.beans.property.DoubleProperty;
@@ -132,5 +132,10 @@ public abstract class AbstractSingleValueIndicator<X, Y> extends AbstractValueIn
         line.setEndY(endY);
 
         addChildNodeIfNotPresent(line);
+    }
+    //added by GiuSan82
+    public void setValueIndicatorVisible(boolean value){
+        line.setVisible(value);
+        setLabelVisible(value);
     }
 }

@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2018 European Organisation for Nuclear Research (CERN), All Rights Reserved.
  */
-
+/**Modified by GiuSan82*/
 package cern.extjfx.samples.chart;
 
 import cern.extjfx.chart.NumericAxis;
@@ -11,16 +11,20 @@ import cern.extjfx.chart.plugins.CrosshairIndicator;
 import cern.extjfx.chart.plugins.DataPointTooltip;
 import cern.extjfx.chart.plugins.Panner;
 import cern.extjfx.chart.plugins.Zoomer;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart.Series;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.layout.GridPane;
 
 public class LargeDataSetsSample extends AbstractSamplePane {
 	DataReducingObservableList<Number, Number> data;
+	LineChart<Number, Number> lineChart;
 
 	@Override
 	public String getName() {
@@ -44,7 +48,7 @@ public class LargeDataSetsSample extends AbstractSamplePane {
 		yAxis.setAutoRangePadding(0.1);
 
 		final int pointsCount = 100_000;
-		LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
+		lineChart = new LineChart<>(xAxis, yAxis);
 		lineChart.setTitle("Series with " + pointsCount + " points");
 		lineChart.setAnimated(false);
 		lineChart.setCreateSymbols(false);
@@ -75,11 +79,24 @@ public class LargeDataSetsSample extends AbstractSamplePane {
 		grid.add(new Label("CTRL + drag left-mouse"), 1, 3);
 		
 		grid.add(new Label("Points #: "), 0, 4);
+		grid.add(new Label("Show Symbols: "), 0, 5);
 		
 		Spinner<Integer> pointsCountSpinner = new Spinner<>(10, 5000, data.getMaxPointsCount(), 10);
 		pointsCountSpinner.setPrefWidth(100);
+
+		/**added by GiuSan82**/
+		CheckBox checkBox = new CheckBox();
+		checkBox.selectedProperty().setValue(false);
+		checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				lineChart.setCreateSymbols(newValue);
+			}
+		});
+		/**/
 		data.maxPointsCountProperty().bind(pointsCountSpinner.valueProperty());
 		grid.add(pointsCountSpinner, 1, 4);
+		grid.add(checkBox, 1, 5);
 		
 		return grid;
 	}

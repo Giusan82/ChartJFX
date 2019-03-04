@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2017 European Organisation for Nuclear Research (CERN), All Rights Reserved.
  */
-
+/**Modified by GiuSan82*/
 package cern.extjfx.chart.plugins;
 
 import cern.extjfx.chart.XYChartPane;
@@ -271,5 +271,10 @@ public abstract class AbstractValueIndicator<X, Y> extends XYChartPlugin<X, Y> {
         if (!getChartChildren().contains(node)) {
             getChartChildren().add(node);
         }
+    }
+
+    //added by GiuSan82
+    public void setLabelVisible(boolean value){
+        label.setVisible(value);
     }
 }
