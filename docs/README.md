@@ -1,10 +1,12 @@
-[![Build Status](https://travis-ci.com/extjfx/extjfx.svg?branch=master)](https://travis-ci.com/extjfx/extjfx)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-# ExtJFX
+# ChartJFX
 
-This is a modified version of ExtJFX that I edited to better fit for my needs. It was been developed at CERN, containing features not supported by the standard JavaFX toolkit. 
-The library consists of 3 modules: 
+This is a modified version of ExtJFX that was been developed at CERN and writed by GregKruk, which I thank for the hard work on building this great library.  I edited it to better suits my needs, where each addition or modification by me is labeled. The modules name are been kept for an easy understanding of modification.
+
+Following is reported the description writed by GregKruk:
+
+The library contains features not supported by the standard JavaFX toolkit and consists of 3 modules:
 - [extjfx-chart](#extjfx-chart): zooming, panning, data annotations, value/range indicators, chart decorations, overlaying different types of charts, etc.
 - [extjfx-fxml](#extjfx-fxml): `FxmlView` class that simplifies loading FXML files using conventional names
 - [extjfx-test](#extjfx-test): `FxJUnit4Runner` to execute GUI tests
